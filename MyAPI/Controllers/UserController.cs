@@ -54,8 +54,10 @@ namespace MyAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLogin([FromBody] UserpassDto userpassDto)
         {
-            if (userpassDto.Login != _configuration.GetValue<string>("login")
-                || userpassDto.Password != _configuration.GetValue<string>("password"))
+            var auth = _configuration.GetSection("Authentication");
+
+            if (userpassDto.Login != auth.GetValue<string>("login")
+                || userpassDto.Password != auth.GetValue<string>("password"))
                 return NotFound(new { message = "We could not find this user or the password is invalid." });
 
             var user = new User()
